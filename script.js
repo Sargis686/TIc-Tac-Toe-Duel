@@ -198,5 +198,109 @@ function playBeep(type) {
 function haptic(ms) {
   if (navigator.vibrate) navigator.vibrate(ms);
 }
+
+
+function startRound() {
+  game.boardState = Array(9).fill(null);
+  game.currentPlayer = "x";
+  game.gameOver = false;
+  game.rounds += 1;
+  clearBoardUI();
+  setStatus("Round " + game.rounds + ": Player X turn.");
+}
+
+function finishRound(outcome) {
+  game.gameOver = true;
+  rewardRound(outcome);
+}
+
+function setupBoard() {
+  for (let i = 0; i < 9; i += 1) {
+    const div = document.createElement("div");
+    div.className = "cell";
+    div.addEventListener("click", () => {
+      if (game.gameOver || div.textContent) return;
+
+      div.textContent = game.currentPlayer.toUpperCase();
+      div.classList.remove("pop");
+      void div.offsetWidth;
+      div.classList.add("pop");
+      playBeep("tap");
+      haptic(14);
+
+      game.boardState[i] = game.currentPlayer;
+
+      const winLine = checkWin(game.currentPlayer);
+      if (winLine) {
+        markWinLine(winLine);
+        playBeep("win");
+        haptic([40, 30, 40]);
+        finishRound(game.currentPlayer);
+        return;
+      }
+      if (checkDraw()) {
+        playBeep("draw");
+        haptic(22);
+        finishRound("draw");
+        return;
+      }
+
+      game.currentPlayer = game.currentPlayer === "x" ? "o" : "x";
+      setStatus("Player " + game.currentPlayer.toUpperCase() + " turn.");
+    });
+    board.appendChild(div);
+  }
+}
+
+
+
+
+
+function randomMove() {
+  if (game.gameOver) return;
+  const options = [];
+  for (let i = 0; i < game.boardState.length; i += 1) {
+    if (game.boardState[i] === null) options.push(i);
+  }
+  if (options.length === 0) return;
+  const idx = options[Math.floor(Math.random() * options.length)];
+  const cell = board.children[idx];
+  cell.click();
+}
+
+function runTrailerLoop() {
+  if (!game.trailerMode) return;
+  if (game.gameOver) startRound();
+  game.trailerTimer = setInterval(() => {
+    if (!game.trailerMode) return;
+    if (game.gameOver) {
+      startRound();
+      return;
+    }
+    randomMove();
+  }, 520);
+}
+
+function stopTrailerLoop() {
+  clearInterval(game.trailerTimer);
+  game.trailerTimer = null;
+}
+
+function toggleTrailerMode() {
+  game.trailerMode = !game.trailerMode;
+  const btn = document.getElementById("trailerBtn");
+  if (game.trailerMode) {
+    app.classList.add("trailer-mode");
+    btn.textContent = "Trailer Mode: On";
+    setStatus("Trailer mode enabled. Recording-ready auto demo.");
+    stopTrailerLoop();
+    runTrailerLoop();
+  } else {
+    app.classList.remove("trailer-mode");
+    btn.textContent = "Trailer Mode: Off";
+    stopTrailerLoop();
+    setStatus("Trailer mode disabled.");
+  }
+}
 //git add .
 //.   git push origin main
