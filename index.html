@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Grid Duel</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="brand-logo">Adams</div>
+
+  <div class="app">
+    <div class="trailer-badge" id="trailerBadge">Trailer Mode: Auto Demo Running</div>
+    <div class="hero">
+      <div>
+        <h1>Quick Grid Duel</h1>
+        <p class="objective">Objective: Make 3 in a row. Win rounds to level up and unlock skins.</p>
+      </div>
+    </div>
+
+    <div class="hud">
+      <div class="card"><div class="label">Level</div><div class="value" id="levelValue">1</div></div>
+      <div class="card"><div class="label">Stars</div><div class="value" id="starsValue">0</div></div>
+      <div class="card"><div class="label">Coins</div><div class="value" id="coinsValue">0</div></div>
+      <div class="card"><div class="label">Streak</div><div class="value" id="streakValue">0</div></div>
+    </div>
+
+    <div class="board" id="board"></div>
+`
+    <div class="controls">
+      <button class="primary" id="playRoundBtn">Play Next Round</button>
+      <button id="resetRunBtn">Reset Run</button>
+      <button id="trailerBtn">Trailer Mode: Off</button>
+    </div>
+
+    <div class="skins" id="skins"></div>
+    <div class="status" id="statusText">Tap Play Next Round.</div>
+  </div>
+
+  <div class="overlay" id="startOverlay">
+    <div class="start-box">
+      <h2 style="margin:0;">One Tap Start</h2>
+      <p>Fast rounds (1-3 min), simple loop, instant rewards.</p>
+      <button class="primary" id="startBtn">Start Game</button>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
