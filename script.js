@@ -59,3 +59,65 @@ function load() {
     game.activeSkin = saved.activeSkin || "classic";
   } catch (_) {}
 }
+
+function currentLevel() {
+  return Math.min(30, Math.floor(game.stars / 3) + 1);
+}
+
+function checkWin(player) {
+  return winLines.find((line) => line.every((index) => game.boardState[index] === player));
+}
+
+function checkDraw() {
+  return game.boardState.every((cell) => cell !== null);
+}
+
+function setStatus(text) {
+  statusText.textContent = text;
+}
+
+function applySkin() {
+  const skin = skins.find((s) => s.id === game.activeSkin) || skins[0];
+  document.documentElement.style.setProperty("--bg", skin.bg);
+  document.documentElement.style.setProperty("--panel", skin.panel);
+  document.documentElement.style.setProperty("--accent", skin.accent);
+  document.documentElement.style.setProperty("--accent-2", skin.accent2);
+}
+
+function renderSkins() {
+  skinsWrap.innerHTML = "";
+  skins.forEach((skin) => {
+    const btn = document.createElement("button");
+    btn.className = "skin";
+    const owned = game.ownedSkins.includes(skin.id);
+    const active = game.activeSkin === skin.id;
+    btn.textContent = active
+      ? "Using: " + skin.name
+      : owned
+        ? "Use " + skin.name
+        : "Unlock " + skin.name + " (" + skin.cost + "c)";
+    btn.disabled = active;
+    btn.addEventListener("click", () => {
+      if (game.ownedSkins.includes(skin.id)) {
+        game.activeSkin = skin.id;
+        applySkin();
+        renderSkins();
+        save();
+        return;
+      }
+      if (game.coins >= skin.cost) {
+        game.coins -= skin.cost;
+        game.ownedSkins.push(skin.id);
+        game.activeSkin = skin.id;
+        applySkin();
+        renderHUD();
+        renderSkins();
+        setStatus("Skin unlocked: " + skin.name);
+        save();
+      } else {
+        setStatus("Need " + (skin.cost - game.coins) + " more coins.");
+      }
+    });
+    skinsWrap.appendChild(btn);
+  });
+}
