@@ -34,3 +34,28 @@ const coinsValue = document.getElementById("coinsValue");
 const streakValue = document.getElementById("streakValue");
 const skinsWrap = document.getElementById("skins");
 const app = document.querySelector(".app");
+
+function save() {
+  localStorage.setItem(storageKey, JSON.stringify({
+    stars: game.stars,
+    coins: game.coins,
+    streak: game.streak,
+    lastClaimDate: game.lastClaimDate,
+    ownedSkins: game.ownedSkins,
+    activeSkin: game.activeSkin
+  }));
+}
+
+function load() {
+  const raw = localStorage.getItem(storageKey);
+  if (!raw) return;
+  try {
+    const saved = JSON.parse(raw);
+    game.stars = saved.stars || 0;
+    game.coins = saved.coins || 0;
+    game.streak = saved.streak || 0;
+    game.lastClaimDate = saved.lastClaimDate || "";
+    game.ownedSkins = saved.ownedSkins || ["classic"];
+    game.activeSkin = saved.activeSkin || "classic";
+  } catch (_) {}
+}
