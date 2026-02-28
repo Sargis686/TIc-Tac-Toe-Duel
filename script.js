@@ -176,5 +176,27 @@ function markWinLine(line) {
   const cells = document.querySelectorAll(".cell");
   line.forEach((index) => cells[index].classList.add("win"));
 }
+
+
+
+function playBeep(type) {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+  const ctx = new AudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "triangle";
+  osc.frequency.value = type === "win" ? 620 : type === "draw" ? 440 : 320;
+  gain.gain.value = 0.05;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.09);
+  osc.onended = () => ctx.close();
+}
+
+function haptic(ms) {
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
 //git add .
 //.   git push origin main
