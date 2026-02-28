@@ -328,5 +328,38 @@ function claimDailyReward() {
   renderHUD();
   save();
 }
+
+
+
+document.getElementById("playRoundBtn").addEventListener("click", startRound);
+document.getElementById("trailerBtn").addEventListener("click", toggleTrailerMode);
+document.getElementById("resetRunBtn").addEventListener("click", () => {
+  game.stars = 0;
+  game.rounds = 0;
+  game.coins = 0;
+  game.streak = 0;
+  game.lastClaimDate = "";
+  game.ownedSkins = ["classic"];
+  game.activeSkin = "classic";
+  game.gameOver = true;
+  clearBoardUI();
+  applySkin();
+  renderHUD();
+  renderSkins();
+  setStatus("Run reset. Tap Play Next Round.");
+  save();
+});
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  document.getElementById("startOverlay").classList.add("hide");
+  claimDailyReward();
+  startRound();
+});
+
+load();
+applySkin();
+setupBoard();
+renderHUD();
+renderSkins();
 //git add .
 //.   git push origin main
