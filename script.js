@@ -302,5 +302,31 @@ function toggleTrailerMode() {
     setStatus("Trailer mode disabled.");
   }
 }
+
+
+function dayDiff(prevDateString, todayString) {
+  const oneDay = 24 * 60 * 60 * 1000;
+  const prev = new Date(prevDateString + "T00:00:00");
+  const cur = new Date(todayString + "T00:00:00");
+  return Math.round((cur - prev) / oneDay);
+}
+
+function claimDailyReward() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!game.lastClaimDate) {
+    game.streak = 1;
+  } else {
+    const diff = dayDiff(game.lastClaimDate, today);
+    if (diff === 1) game.streak += 1;
+    if (diff > 1) game.streak = 1;
+    if (diff === 0) return;
+  }
+  const reward = 15 + (game.streak * 2);
+  game.coins += reward;
+  game.lastClaimDate = today;
+  setStatus("Daily reward: +" + reward + " coins. Streak " + game.streak + ".");
+  renderHUD();
+  save();
+}
 //git add .
 //.   git push origin main
