@@ -121,3 +121,60 @@ function renderSkins() {
     skinsWrap.appendChild(btn);
   });
 }
+
+
+function renderHUD() {
+  levelValue.textContent = currentLevel();
+  starsValue.textContent = game.stars;
+  coinsValue.textContent = game.coins;
+  streakValue.textContent = game.streak;
+}
+
+function rewardRound(outcome) {
+  if (outcome === "x") {
+    game.stars += 1;
+    game.coins += 16;
+    setStatus("Win! +1 star, +16 coins.");
+  } else if (outcome === "o") {
+    game.coins += 6;
+    setStatus("O wins. +6 coins for finishing.");
+  } else {
+    game.coins += 9;
+    setStatus("Draw! +9 coins.");
+  }
+
+  if (game.stars > 0 && game.stars % 5 === 0) {
+    game.coins += 20;
+    setStatus("Milestone hit! +20 bonus coins.");
+  }
+
+  renderHUD();
+  renderSkins();
+  save();
+}
+
+
+
+function renderHUD() {
+  levelValue.textContent = currentLevel();
+  starsValue.textContent = game.stars;
+  coinsValue.textContent = game.coins;
+  streakValue.textContent = game.streak;
+}
+
+
+function clearBoardUI() {
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach((c) => {
+    c.textContent = "";
+    c.classList.remove("win");
+  });
+}
+
+function markWinLine(line) {
+  if (!line) return;
+  const cells = document.querySelectorAll(".cell");
+  line.forEach((index) => cells[index].classList.add("win"));
+}
+//git add .
+//.   git push origin main
